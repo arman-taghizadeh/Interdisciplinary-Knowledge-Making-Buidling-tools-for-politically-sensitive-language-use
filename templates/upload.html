@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Text Extraction</title>
+
+    <style>
+     body {
+            background-color: #E3E5E7; /* Set your desired background color here */
+        }
+        .uploaded-image {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .text-box {
+            background-color: #CFDFF2;
+            padding: 25px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            width: 600px;
+        }
+
+        .copy-button {
+            margin-left: 10px;
+            padding: 10px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+          /* Style for the "Upload and Extract Text" button */
+        .upload-button {
+            padding: 10px 20px;
+            background-color: #ff8c00; /* Orange color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        /* Hover effect for the button */
+        .upload-button:hover {
+            background-color: #ff6f00; /* Darker shade of orange */
+        }
+            .next-button {
+        padding: 8px 8px;
+        background-color: #4CAF50; /* Green color */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    /* Hover effect for the button */
+    .next-button:hover {
+        background-color: #45a049; /* Darker shade of green */
+    }
+
+    .text-container {
+    margin-top: 20px;
+    margin-left: 0px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+#text1 {
+    margin-top: 20px;
+    width: 40%; /* Adjust the width as needed */
+    height: 200px; /* Adjust the height as needed */
+    padding: 10px;
+    margin: 0 auto; /* Center the textarea */
+    border-radius: 5px;
+    border: 2px solid #ccc; /* Add a border for better visibility */
+    resize: none; /* Disable textarea resizing */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+}
+#text2 {
+    width: 25%; /* Adjust the width as needed */
+    height: 120px; /* Adjust the height as needed */
+    padding: 10px;
+    margin: 0 auto; /* Center the textarea */
+    border-radius: 5px;
+    border: 2px solid #ccc; /* Add a border for better visibility */
+    resize: none; /* Disable textarea resizing */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+}
+#text3 {
+    width: 25%; /* Adjust the width as needed */
+    height: 150px; /* Adjust the height as needed */
+    padding: 10px;
+    margin: 0 auto; /* Center the textarea */
+    border-radius: 5px;
+    border: 2px solid #ccc; /* Add a border for better visibility */
+    resize: none; /* Disable textarea resizing */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+}
+
+#text4 {
+    width: 25%; /* Adjust the width as needed */
+    height: 150px; /* Adjust the height as needed */
+    padding: 10px;
+    margin: 0 auto; /* Center the textarea */
+    border-radius: 5px;
+    border: 2px solid #ccc; /* Add a border for better visibility */
+    resize: none; /* Disable textarea resizing */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+}
+
+
+.button-container {
+    margin-top: 10px;
+}
+
+.copy-button {
+    padding: 8px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+         .check-button {
+            padding: 7px 20px;
+            background-color: #7357D6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            margin-left: 3px;
+
+            text-decoration: none; /* Remove underline from anchor tag */
+        }
+
+
+.next-button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.next-button:hover,
+.copy-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+ .pair-container {
+            margin-bottom: 20px;
+            margin-top: 50px;
+        }
+
+        .check-button:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        .option-bar {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+
+        .option-bar button {
+            background-color: transparent;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            margin: 0 10px;
+        }
+
+        .option-bar button:hover {
+            background-color: #555;
+        }
+
+        /* Hide all upload sections by default */
+        .upload-section {
+            display: none;
+        }
+
+
+    </style>
+
+
+
+</head>
+<body>
+    <div class="option-bar">
+        <!-- Option buttons -->
+        <button onclick="goToHome()">Home</button>
+        <button onclick="toggleUploadSection('pdf')">PDF</button>
+        <button onclick="toggleUploadSection('img-text')">Extract Img-Text</button>
+        <button onclick="toggleUploadSection('img-caption')">Img-Caption</button>
+    </div>
+
+
+    <!-- PDF Upload Section -->
+    <div class="upload-section" id="pdf-section">
+        <h2>Upload your PDF File:</h2>
+
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file1" accept=".pdf"><br><br>
+            <input type="submit" value="Upload and Process" class="upload-button">
+        </form>
+    </div>
+
+    <!-- Extract Img-Text Upload Section -->
+    <div class="upload-section" id="img-text-section">
+        <h2>Upload Image for Text Extraction:</h2>
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file2" accept="image/*"><br><br>
+            <input type="submit" value="Upload and Process" class="upload-button">
+        </form>
+    </div>
+
+    <!-- Img-Caption Upload Section -->
+    <div class="upload-section" id="img-caption-section">
+        <h2>Upload Image for Captioning:</h2>
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file3" accept="image/*"><br><br>
+            <input type="submit" value="Upload and Process" class="upload-button">
+        </form>
+    </div>
+
+<div class="pair-container">
+{% if text1 %}
+    <h2>PDF text by page:</h2>
+<div class="text-container">
+    <textarea id="text1" readonly>{{ text1[0] }}</textarea>
+    <div class="button-container">
+        <button onclick="myFunction()" class="copy-button">Copy text</button>
+        <button id="prevButton" class="next-button" onclick="prevText()">< Prev</button>
+        <button id="nextButton" class="next-button" onclick="nextText()">Next ></button>
+         <a href="https://www.machtsprache.de/text-checker" class="check-button" target="_blank">To macht.sprache.</a>
+
+
+    </div>
+</div>
+
+{% endif %}
+
+</div>
+
+    {% if image_url2 %}
+    <div class="pair-container">
+        <h2>Uploaded Image for text extraction and evaluation:</h2>
+        <img src="{{ image_url2 }}" alt="Uploaded Image" class="uploaded-image">
+    </div>
+    {% endif %}
+
+    {% if text2 %}
+
+
+    <div class="text-container">
+    <textarea id="text2" readonly>{{ text2 }}</textarea>
+    <div class="button-container">
+        <button onclick="myFunction1()" class="copy-button">Copy text</button>
+         <a href="#" class="check-button" onclick="updateText2()">Evaluate Image</a>
+        <a href="#" class="check-button" onclick="originalText2()" id="showOriginal2" style="display: none;">show original</a>
+
+
+
+    </div>
+</div>
+
+
+
+    {% endif %}
+
+    {% if image_url3 %}
+    <div class="pair-container">
+        <h2>Uploaded Image for captioning and evaluation:</h2>
+        <img src="{{ image_url3 }}" alt="Uploaded Image" class="uploaded-image">
+    </div>
+    {% endif %}
+
+    {% if text3 %}
+        <div class="text-container">
+    <textarea id="text3" readonly>{{ text3 }}</textarea>
+    <div class="button-container">
+        <button onclick="myFunction2()" class="copy-button">Copy text</button>
+         <a href="#" class="check-button" onclick="updateText3()">Evaluate Image</a>
+        <a href="#" class="check-button" onclick="originalText3()" id="showOriginal3" style="display: none;">show original</a>
+
+
+    </div>
+</div>
+
+
+    {% endif %}
+
+
+
+<div class="text-container">
+    <h2>Paste your text here and Evaluate!</h2>
+    <textarea id="text4" readonly></textarea>
+        <div class="button-container">
+
+    <button onclick="pasteFromClipboard('text4')" class="copy-button">Paste</button>
+    <button onclick="checkText('text4')" class="check-button" >Evaluate Text</button>
+            </div>
+
+</div>
+
+
+
+
+
+
+
+    <script>
+
+    function myFunction() {
+  // Get the text field
+  var copyText = document.getElementById("text1");
+
+  // Select the text field
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); // For mobile devices
+
+  // Copy the text inside the text field
+  document.execCommand("copy");
+
+  // Alert the copied text
+  alert("Copied the text: " + copyText.value);
+}
+
+function myFunction1() {
+  // Get the text field
+  var copyText = document.getElementById("text2");
+
+  // Select the text field
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); // For mobile devices
+
+  // Copy the text inside the text field
+  document.execCommand("copy");
+
+  // Alert the copied text
+  alert("Copied the text: " + copyText.value);
+}
+
+
+function myFunction2() {
+  // Get the text field
+  var copyText = document.getElementById("text3");
+
+  // Select the text field
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); // For mobile devices
+
+  // Copy the text inside the text field
+  document.execCommand("copy");
+
+  // Alert the copied text
+  alert("Copied the text: " + copyText.value);
+}
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            const submitButton = document.getElementById('submitButton');
+
+            fileInputs.forEach(function(input) {
+                input.addEventListener('change', function() {
+                    checkUploadValidity();
+                });
+            });
+
+            function checkUploadValidity() {
+                let filesSelected = false;
+
+                fileInputs.forEach(function(input) {
+                    if (input.files.length > 0) {
+                        filesSelected = true;
+                    }
+                });
+
+                if (filesSelected) {
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                }
+            }
+        });
+
+        let textIndex = 0;
+        const textList = {{ text1 | tojson }};
+
+        function updateText() {
+            const textElement = document.getElementById('text1');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+
+            if (textIndex === 0) {
+                prevButton.disabled = true;
+            } else {
+                prevButton.disabled = false;
+            }
+
+            if (textIndex === textList.length - 1) {
+                nextButton.disabled = true;
+            } else {
+                nextButton.disabled = false;
+            }
+
+            textElement.textContent = textList[textIndex];
+        }
+
+        function nextText() {
+            if (textIndex < textList.length - 1) {
+                textIndex++;
+                updateText();
+            }
+        }
+
+        function prevText() {
+            if (textIndex > 0) {
+                textIndex--;
+                updateText();
+            }
+        }
+
+        // Initialize the text display
+        updateText();
+
+
+            function updateText3() {
+
+        const sensText = "{{ sens3 }}"; // Get the value of sens3 from the backend
+        document.getElementById('text3').value = sensText; // Update the textarea content
+        document.getElementById('showOriginal3').style.display = 'inline'; // Show the "show original" button
+    }
+function updateText2() {
+
+    const sensText = "{{ sens2 }}"; // Get the value of sens3 from the backend
+    document.getElementById('text2').value = sensText; // Update the textarea content
+    document.getElementById('showOriginal2').style.display = 'inline'; // Show the "show original" button
+     console.log("updateText2 function called")
+}
+
+function hideShowOriginalButton(buttonId) {
+    document.getElementById(buttonId).style.display = 'none'; // Hide the "show original" button
+}
+
+function originalText2() {
+
+    const sensText = "{{ text2 }}"; // Get the value of sens3 from the backend
+    document.getElementById('text2').value = sensText; // Update the textarea content
+    hideShowOriginalButton('showOriginal2'); // Hide the "show original" button
+}
+
+
+function originalText3() {
+
+    const sensText = "{{ text3 }}"; // Get the value of sens3 from the backend
+    document.getElementById('text3').value = sensText; // Update the textarea content
+    hideShowOriginalButton('showOriginal3'); // Hide the "show original" button
+}
+
+
+      function toggleUploadSection(section) {
+            // Hide all upload sections
+            document.querySelectorAll('.upload-section').forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // Show the selected upload section
+            document.getElementById(section + '-section').style.display = 'block';
+        }
+
+
+ function goToHome() {
+            window.location.href = "/";
+        }
+
+
+
+function pasteFromClipboard(textareaId) {
+    navigator.clipboard.readText()
+        .then(text => {
+            document.getElementById(textareaId).value = text;
+        })
+        .catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+            alert('Failed to read clipboard contents.');
+        });
+}
+
+function checkText(textboxId) {
+    // Get the text from the specified textbox
+    var textToCheck = document.getElementById(textboxId).value;
+
+    // Send the text to the server for checking
+    fetch('/check', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'text_to_check=' + encodeURIComponent(textToCheck),
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Update the textbox with the check result
+        document.getElementById(textboxId).value = data;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while checking the text.');
+    });
+}
+
+
+
+    </script>
+</body>
+</html>

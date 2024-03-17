@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Form</title>
+<style>
+     body {
+            background-color: #E3E5E7; /* Set your desired background color here */
+        }
+        .uploaded-image {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .text-box {
+            background-color: #CFDFF2;
+            padding: 25px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            width: 600px;
+        }
+
+        .copy-button {
+            margin-left: 10px;
+            padding: 17px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+          /* Style for the "Upload and Extract Text" button */
+        .upload-button {
+            padding: 10px 20px;
+            background-color: #ff8c00; /* Orange color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        /* Hover effect for the button */
+        .upload-button:hover {
+            background-color: #ff6f00; /* Darker shade of orange */
+        }
+
+               .option-bar {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .option-bar button {
+            background-color: transparent;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            margin: 0 10px;
+        }
+
+        .option-bar button:hover {
+            background-color: #555;
+        }
+
+        /* Hide all upload sections by default */
+        .upload-section {
+            display: none;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="option-bar">
+        <!-- Option buttons -->
+        
+        <button onclick="toggleUploadSection('pdf')">PDF</button>
+        <button onclick="toggleUploadSection('img-text')">Extract Img-Text</button>
+        <button onclick="toggleUploadSection('img-caption')">Img-Caption</button>
+    </div>
+
+    <!-- PDF Upload Section -->
+    <div class="upload-section" id="pdf-section">
+        <h2>Upload your PDF File:</h2>
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file1" accept=".pdf"><br><br>
+            <input type="submit" value="Upload and Process" class="upload-button">
+
+        </form>
+    </div>
+
+    <!-- Extract Img-Text Upload Section -->
+    <div class="upload-section" id="img-text-section">
+        <h2>Upload Image for Text Extraction:</h2>
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file2" accept="image/*"><br><br>
+            <input type="submit" value="Upload and Process" class="upload-button">
+        </form>
+    </div>
+
+    <!-- Img-Caption Upload Section -->
+    <div class="upload-section" id="img-caption-section">
+        <h2>Upload Image for Captioning:</h2>
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file3" accept="image/*"><br><br>
+            <input type="submit" value="Upload and Process" class="upload-button">
+        </form>
+    </div>
+
+
+
+        <!-- Description section -->
+    <div>
+        <h2>Seminar: Building tools for politically sensitive language use </h2>
+        <p>Choose the type of file you want to upload and click on the corresponding button to proceed.</p>
+    </div>
+
+  <div>
+        <h2>Welcome!</h2>
+        <p>Our web application offers a versatile platform for various content analysis tasks, providing users with powerful features for text extraction, image captioning, and sensitive content detection.</p>
+        <h3>Text Extraction from Images:</h3>
+        <p>Upload images containing text, and our tool effortlessly extracts text from them, making it easy to digitize and manipulate textual content.</p>
+        <h3>Automatic Image Captioning:</h3>
+        <p>Effortlessly generate captions for your images with our automatic image captioning feature. Simply upload your images, and our tool will generate descriptive captions to enhance accessibility and understanding.</p>
+        <h3>Sensitive Content Detection:</h3>
+        <p>Our tool is equipped with advanced algorithms to detect sensitive content, such as sexism and racism, in both text and images. It helps ensure that your content aligns with ethical and inclusive standards.</p>
+        <h3>PDF to Text Conversion:</h3>
+        <p>Easily convert PDF documents into editable text format. Upload your PDF files, and our tool will quickly extract the text, making it convenient for further analysis or editing.</p>
+        <h3>Expectations:</h3>
+        <ul>
+            <li>The project serves to identify sensitive language in advertisements by displaying automatically generated captions/descriptions to said advertisements in which sensitive words are highlighted for better visibility by the reader.</li>
+            <li>One of the expected outcomes of this project is to facilitate access to sensitive language existing not only in texts but also in images, specifically advertisements.</li>
+            <li>Another important outcome is to enhance macht.sprache usability by including more features that are user-friendly, especially considering the fact that advertisements, due to their persuasive purposes, contain attention-grabbing language that can be highly sensitive.</li>
+        </ul>
+        <p>Whether you're a researcher, content creator, or concerned individual, our Multi-Purpose Content Analysis Tool empowers you to extract, analyze, and ensure the integrity and inclusivity of your content effortlessly. Try it now to experience the power of content analysis at your fingertips!</p>
+    </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            const submitButton = document.getElementById('submitButton');
+
+            fileInputs.forEach(function(input) {
+                input.addEventListener('change', function() {
+                    checkUploadValidity();
+                });
+            });
+
+            function checkUploadValidity() {
+                let filesSelected = false;
+
+                fileInputs.forEach(function(input) {
+                    if (input.files.length > 0) {
+                        filesSelected = true;
+                    }
+                });
+
+                if (filesSelected) {
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                }
+            }
+        });
+
+      function toggleUploadSection(section) {
+            // Hide all upload sections
+            document.querySelectorAll('.upload-section').forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // Show the selected upload section
+            document.getElementById(section + '-section').style.display = 'block';
+        }
+
+
+function pasteFromClipboard() {
+    navigator.clipboard.readText()
+        .then(text => {
+            document.getElementById("translateText").value = text;
+        })
+        .catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+            alert('Failed to read clipboard contents.');
+        });
+}
+
+
+    </script>
+
+</body>
+</html>
